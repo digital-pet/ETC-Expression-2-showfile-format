@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ufwb version="1.17">
+    <grammar name="New grammar" start="id:1" author="Sofia" fileextension=".shw">
+        <structure name="defaults" id="2" encoding="ISO_8859-1:1987" endian="little" signed="no"/>
+        <structure name="Data" id="4" length="dataSize" extends="id:2"/>
+        <structure name="Record" id="6" length="16" extends="id:2">
+            <structure name="Type" id="7" length="2">
+                <number name="Minor" id="8" type="integer" length="1" display="hex"/>
+                <number name="Major" id="9" type="integer" length="1" display="hex"/>
+            </structure>
+            <structure name="Index" id="11" length="2" fillcolor="CDCDCD"/>
+            <structure name="Checksums" id="13" length="4" fillcolor="FF7FBF">
+                <description>Sample python implementation of checksum algorithm:
+
+from uint import Uint as FixedUint, Int as FixedInt
+
+
+def doChecksum(chunk):
+    v1 = FixedInt(0,32)
+    v2 = FixedInt(0,32)
+
+
+    for i, b in enumerate(chunk):
+        v2 = v2 + b
+        v1 = v1 + (i ^ b)
+
+
+    cs = (v1 * 0x10000) | (v2 &amp; 0xFFFF)
+    return cs</description>
+                <number name="Sum16" id="14" fillcolor="FF007F" type="integer" length="2"/>
+                <number name="UnknownChecksum" id="15" fillcolor="FF55FF" type="integer" length="2" display="hex"/>
+            </structure>
+            <number name="dataSize" id="17" fillcolor="6FE0A6" type="integer" length="4"/>
+            <offset name="dataPtr" id="18" fillcolor="55AA7F" length="4" references="id:4" referenced-size="id:17" follownullreference="no"/>
+        </structure>
+        <structure name="&lt;File&gt;" id="1" extends="id:2">
+            <structref name="&lt;magic&gt;" id="21" structure="id:20"/>
+            <structref name="&lt;Header&gt;" id="23" structure="id:22"/>
+        </structure>
+        <structure name="magic" id="20" length="16" extends="id:2" fillcolor="000000">
+            <string name="szMagic" id="25" fillcolor="FFFF00" type="zero-terminated">
+                <fixedvalues>
+                    <fixedvalue name="Magic String" value="ETC EXP II"/>
+                </fixedvalues>
+            </string>
+        </structure>
+        <structure name="Header" id="22" length="16" extends="id:2">
+            <binary name="Header Start" mustmatch="yes" id="27" fillcolor="AA0000" length="4">
+                <fixedvalues>
+                    <fixedvalue name="&lt;unnamed&gt;" value="00000000"/>
+                </fixedvalues>
+            </binary>
+            <structure name="Checksums" id="28" length="4" fillcolor="FF7FBF">
+                <number name="Sum16" id="29" fillcolor="FF007F" type="integer" length="2" display="hex"/>
+                <number name="UnknownChecksum" id="30" fillcolor="FF55FF" type="integer" length="2" display="hex"/>
+            </structure>
+            <number name="indexSize" id="32" fillcolor="6FE0A6" type="integer" length="4"/>
+            <offset name="&lt;FileIndex&gt;" id="34" fillcolor="55AA7F" length="4" references="id:33" referenced-size="id:32" follownullreference="yes"/>
+        </structure>
+        <structure name="FileIndex" id="33" repeatmin="0" repeatmax="-1" extends="id:4" order="variable">
+            <structref name="&lt;MLProfilesRecord&gt;" id="37" repeatmin="0" structure="id:36"/>
+            <structref name="&lt;PatchRecord&gt;" id="39" repeatmin="0" structure="id:38"/>
+            <structref name="&lt;DMXOutRecord&gt;" id="41" repeatmin="0" structure="id:40"/>
+            <structref name="&lt;ChannelsRecord&gt;" id="43" repeatmin="0" structure="id:42"/>
+            <structref name="&lt;SystemRecord&gt;" id="45" repeatmin="0" structure="id:44"/>
+            <structref name="&lt;SubmasterRecord&gt;" id="47" repeatmin="0" structure="id:46"/>
+            <structref name="&lt;CueRecord&gt;" id="49" repeatmin="0" structure="id:48"/>
+            <structref name="&lt;ShowNameRecord&gt;" id="51" repeatmin="0" structure="id:50"/>
+            <structref name="&lt;ShowRecord&gt;" id="53" repeatmin="0" structure="id:52"/>
+            <structref name="&lt;MacroRecord&gt;" id="55" repeatmin="0" structure="id:54"/>
+            <structref name="&lt;MajorID30Record&gt;" id="57" repeatmin="0" structure="id:56"/>
+            <structref name="&lt;UnknownRecord&gt;" id="59" repeatmin="0" structure="id:58"/>
+        </structure>
+        <structure name="SystemRecord" id="44" extends="id:6">
+            <structure name="Type" id="61">
+                <number name="Major" mustmatch="yes" id="63" fillcolor="FFAAFF" type="integer">
+                    <fixedvalues>
+                        <fixedvalue name="&lt;unnamed&gt;" value="0x20"/>
+                    </fixedvalues>
+                </number>
+            </structure>
+            <structure name="Checksums" id="65">
+                <number name="Sum16" id="68" type="integer"/>
+                <number name="UnknownChecksum" id="69" type="integer"/>
+            </structure>
+            <number name="dataSize" id="71" type="integer"/>
+            <offset name="dataPtr" id="72" references="id:4" referenced-size="id:17"/>
+        </structure>
+        <structure name="ShowRecord" id="52" extends="id:6">
+            <structure name="Type" id="74">
+                <number name="Major" mustmatch="yes" id="76" fillcolor="AAFF7F" type="integer">
+                    <fixedvalues>
+                        <fixedvalue name="&lt;unnamed&gt;" value="0x1"/>
+                    </fixedvalues>
+                </number>
+            </structure>
+            <structure name="Checksums" id="78">
+                <number name="Sum16" id="81" type="integer"/>
+                <number name="UnknownChecksum" id="82" type="integer"/>
+            </structure>
+            <number name="dataSize" id="84" type="integer"/>
+            <offset name="dataPtr" id="85" references="id:4" referenced-size="id:17"/>
+        </structure>
+        <structure name="MajorID30Record" id="56" extends="id:6">
+            <structure name="Type" id="87">
+                <number name="Major" mustmatch="yes" id="89" fillcolor="00AAFF" type="integer">
+                    <fixedvalues>
+                        <fixedvalue name="&lt;unnamed&gt;" value="0x30"/>
+                    </fixedvalues>
+                </number>
+            </structure>
+            <structure name="Checksums" id="91">
+                <number name="Sum16" id="94" type="integer"/>
+                <number name="UnknownChecksum" id="95" type="integer"/>
+            </structure>
+            <number name="dataSize" id="97" type="integer"/>
+            <offset name="dataPtr" id="98" references="id:4" referenced-size="id:17"/>
+        </structure>
+        <structure name="UnknownRecord" id="58" extends="id:6">
+            <structure name="Checksums" id="100">
+                <number name="Sum16" id="107" type="integer"/>
+                <number name="UnknownChecksum" id="108" type="integer"/>
+            </structure>
+            <number name="dataSize" id="110" type="integer"/>
+            <offset name="dataPtr" id="111" references="id:4" referenced-size="id:17"/>
+        </structure>
+        <structure name="MacroRecord" id="54" extends="id:6">
+            <structure name="Type" id="113">
+                <number name="Minor" id="114" fillcolor="FFFF7F" type="integer"/>
+                <number name="Major" mustmatch="yes" id="115" fillcolor="FFFF7F" type="integer">
+                    <fixedvalues>
+                        <fixedvalue name="&lt;unnamed&gt;" value="0x10"/>
+                    </fixedvalues>
+                </number>
+            </structure>
+            <structure name="Index" id="117">
+                <number name="MacroNumber" id="118" fillcolor="5FAFFF" type="integer" length="2"/>
+            </structure>
+            <structure name="Checksums" id="120">
+                <number name="Sum16" id="121" type="integer"/>
+                <number name="UnknownChecksum" id="122" type="integer"/>
+            </structure>
+            <number name="dataSize" id="124" type="integer"/>
+            <offset name="dataPtr" id="126" references="id:125" referenced-size="id:17"/>
+        </structure>
+        <structure name="MacroData" id="125" extends="id:4">
+            <binary name="2PadBytes" id="128" fillcolor="AA0000" length="2"/>
+            <number name="NumSteps" id="129" fillcolor="FFFF7F" type="integer" length="2"/>
+            <structure name="Steps" id="130" length="0" repeatmin="0" repeatmax="-1" order="variable">
+                <binary name="Scancode" id="131" fillcolor="AAAAFF" length="2">
+                    <fixedvalues>
+                        <fixedvalue name="KEY_SETUP" value="4FFA"/>
+                        <fixedvalue name="KEY_3" value="33FA"/>
+                        <fixedvalue name="KEY_ENTER" value="0DFA"/>
+                        <fixedvalue name="KEY_1" value="31FA"/>
+                        <fixedvalue name="KEY_STAGE" value="49FA"/>
+                    </fixedvalues>
+                </binary>
+            </structure>
+        </structure>
+        <structure name="MLPersRecord" id="36" length="16" alignment="0" extends="id:44" encoding="ISO_8859-1:1987" endian="little" signed="no">
+            <structure name="Type" id="134">
+                <number name="Minor" mustmatch="yes" id="135" fillcolor="FF557F" type="integer">
+                    <fixedvalues>
+                        <fixedvalue name="&lt;unnamed&gt;" value="0xA"/>
+                    </fixedvalues>
+                </number>
+                <number name="Major" id="136" type="integer"/>
+            </structure>
+            <structure name="Index" id="138">
+                <binary name="&lt;binary&gt;" id="139" fillcolor="AA0000" length="remaining"/>
+            </structure>
+            <offset name="dataPtr" id="147" references="id:141" referenced-size="id:17"/>
+        </structure>
+        <structure name="MLPersData" id="141" extends="id:4">
+            <binary name="&lt;reserved&gt;" id="149" fillcolor="AA0000" length="2"/>
+            <number name="ProfileCount" id="150" fillcolor="FFFF7F" type="integer" length="2"/>
+            <structure name="MLPersTable" id="151" repeatmin="0" repeatmax="-1" order="variable">
+                <structure name="MLPersonality" id="152" repeatmin="0">
+                    <binary name="&lt;binary&gt;" mustmatch="yes" id="153" fillcolor="AA0000" length="8">
+                        <fixedvalues>
+                            <fixedvalue name="&lt;unnamed&gt;" value="0000000000000000"/>
+                        </fixedvalues>
+                    </binary>
+                    <number name="NumAttribs" id="154" fillcolor="FFAA00" type="integer" length="2" endian="big"/>
+                    <string name="Profile Name" id="155" fillcolor="00FF7F" type="fixed-length" length="14"/>
+                    <structure name="MLAttributes" id="156" length="0" alignment="8" repeatmin="0" repeatmax="NumAttribs" order="variable">
+                        <binary name="&lt;binary&gt;" id="157" fillcolor="55AAFF" repeatmin="0" length="8"/>
+                    </structure>
+                </structure>
+            </structure>
+        </structure>
+        <structure name="PatchRecord" id="38" extends="id:44">
+            <structure name="Type" id="162">
+                <number name="Minor" mustmatch="yes" id="163" fillcolor="00FF00" type="integer">
+                    <fixedvalues>
+                        <fixedvalue name="&lt;unnamed&gt;" value="0x1"/>
+                    </fixedvalues>
+                </number>
+                <number name="Major" id="164" type="integer"/>
+            </structure>
+            <structure name="Index" id="166">
+                <binary name="&lt;binary&gt;" id="167" fillcolor="AA0000" length="remaining"/>
+            </structure>
+            <offset name="dataPtr" id="175" references="id:169" referenced-size="id:17"/>
+        </structure>
+        <structure name="PatchData" id="169" extends="id:4">
+            <number name="NumDimmers" id="177" fillcolor="FFFF00" type="integer" length="2"/>
+            <binary name="10bytepad" id="178" length="10"/>
+            <structure name="PatchTable" id="179" length="0" alignment="0" repeatmin="0" repeatmax="-1" order="variable">
+                <structure name="PatchEntry" id="180" length="12" alignment="0" repeatmin="0" fillcolor="646464">
+                    <number name="Channel" id="181" fillcolor="FFAAFF" type="integer" length="2"/>
+                    <binary name="&lt;binary&gt;" id="182" length="2"/>
+                    <string name="&lt;string&gt;" id="183" fillcolor="00FF7F" type="fixed-length" length="5"/>
+                </structure>
+            </structure>
+        </structure>
+        <structure name="DMXOutRecord" id="40" extends="id:44">
+            <structure name="Type" id="187">
+                <number name="Minor" mustmatch="yes" id="188" fillcolor="00AAFF" type="integer">
+                    <fixedvalues>
+                        <fixedvalue name="&lt;unnamed&gt;" value="0x4"/>
+                    </fixedvalues>
+                </number>
+                <number name="Major" id="189" type="integer"/>
+            </structure>
+            <structure name="Index" id="191">
+                <binary name="&lt;binary&gt;" id="192" fillcolor="AA0000" length="remaining"/>
+            </structure>
+            <offset name="dataPtr" id="200" references="id:194" referenced-size="id:17"/>
+        </structure>
+        <structure name="DMXOutData" id="194" extends="id:4">
+            <number name="NumUniverses" id="202" fillcolor="FFFF7F" type="integer" length="2" endian="big"/>
+            <number name="Speed" id="203" fillcolor="FFAA7F" type="integer" length="2"/>
+            <binary name="paddingbytes" id="204" fillcolor="AA0000" length="4"/>
+            <structure name="UniverseTable" id="205" repeatmax="-1" order="variable">
+                <structure name="UniverseEntry" id="206" length="60" repeatmin="0" fillcolor="AA5500">
+                    <number name="OutputMode" id="207" fillcolor="AA55FF" repeatmin="0" type="integer" length="4" display="hex">
+                        <fixedvalues>
+                            <fixedvalue name="DMX" value="0x4E"/>
+                            <fixedvalue name="MPX" value="0x4D"/>
+                        </fixedvalues>
+                    </number>
+                    <number name="Start Address" id="208" fillcolor="FFFF7F" type="integer" length="4"/>
+                </structure>
+            </structure>
+        </structure>
+        <structure name="ChannelsRecord" id="42" extends="id:44">
+            <description>24 byte segments
+</description>
+            <structure name="Type" id="212">
+                <number name="Minor" mustmatch="yes" id="213" fillcolor="FFFF00" type="integer">
+                    <fixedvalues>
+                        <fixedvalue name="&lt;unnamed&gt;" value="0x3"/>
+                    </fixedvalues>
+                </number>
+                <number name="Major" id="214" type="integer"/>
+            </structure>
+            <structure name="Index" id="216">
+                <binary name="&lt;binary&gt;" id="217" fillcolor="AA0000" length="remaining"/>
+            </structure>
+            <offset name="dataPtr" id="225" references="id:219" referenced-size="id:17"/>
+        </structure>
+        <structure name="ChannelsData" id="219" extends="id:4">
+            <number name="NumRecords" id="227" fillcolor="FFFF00" type="integer" length="4"/>
+            <binary name="20BytePadding" id="228" fillcolor="AA5500" length="20"/>
+            <structure name="ChannelArray" id="229" repeatmax="-1" order="variable">
+                <structure name="ChannelAttributes" id="230" length="24" alignment="0" repeatmin="0" encoding="ISO_8859-1:1987" endian="little" signed="no">
+                    <binary name="Flags" id="231" fillcolor="FF00FF" length="4"/>
+                    <string name="Label" id="232" fillcolor="00FF7F" type="fixed-length" length="16"/>
+                    <binary name="padding" id="233" fillcolor="AA0000" length="remaining">
+                        <fixedvalues>
+                            <fixedvalue name="&lt;unnamed&gt;" value="0000"/>
+                        </fixedvalues>
+                    </binary>
+                </structure>
+            </structure>
+        </structure>
+        <structure name="SubmasterRecord" id="46" length="16" alignment="0" extends="id:52" encoding="ISO_8859-1:1987" endian="little" signed="no">
+            <structure name="Type" id="237">
+                <number name="Minor" mustmatch="yes" id="238" fillcolor="FFAA00" type="integer">
+                    <fixedvalues>
+                        <fixedvalue name="&lt;unnamed&gt;" value="0x1"/>
+                    </fixedvalues>
+                </number>
+                <number name="Major" id="239" type="integer"/>
+            </structure>
+            <structure name="Index" id="241">
+                <number name="SubNo" id="242" fillcolor="5FCAFF" type="integer" length="1"/>
+                <number name="PageNo" id="243" fillcolor="5F94FF" type="integer" length="1"/>
+            </structure>
+            <offset name="dataPtr" id="251" references="id:245" referenced-size="id:17"/>
+        </structure>
+        <structure name="SubmasterData" id="245" extends="id:4">
+            <binary name="PaddingBytes" id="253" fillcolor="AA0000" length="2"/>
+            <number name="NumChannels" id="254" fillcolor="FFFF00" type="integer" length="2"/>
+            <binary name="Unknown" id="255" fillcolor="AA5500" length="32"/>
+            <string name="SubmasterLabel" id="256" fillcolor="00FF7F" type="fixed-length" length="16"/>
+            <binary name="MorePadding" id="257" fillcolor="AA0000" length="4"/>
+            <structref name="&lt;ChannelLevels&gt;" id="259" structure="id:258"/>
+        </structure>
+        <structure name="CueRecord" id="48" length="16" alignment="0" extends="id:52" encoding="ISO_8859-1:1987" endian="little" signed="no">
+            <structure name="Type" id="261">
+                <number name="Minor" mustmatch="yes" id="262" fillcolor="55C7FF" type="integer">
+                    <fixedvalues>
+                        <fixedvalue name="&lt;unnamed&gt;" value="0x2"/>
+                    </fixedvalues>
+                </number>
+                <number name="Major" id="263" type="integer"/>
+            </structure>
+            <structure name="Index" id="265">
+                <number name="CueNoBCD" id="266" fillcolor="5FAFFF" type="integer" length="2" display="hex"/>
+            </structure>
+            <offset name="dataPtr" id="273" references="id:4" referenced-size="id:17"/>
+        </structure>
+        <structure name="ChannelLevels" id="258" repeatmin="0" repeatmax="-1" extends="id:2" endian="little" fillcolor="55557F">
+            <number name="Level" id="275" fillcolor="5555FF" repeatmin="0" type="integer" length="1"/>
+        </structure>
+        <structure name="ShowNameRecord" id="50" extends="id:52">
+            <structure name="Type" id="277">
+                <number name="Minor" mustmatch="yes" id="278" fillcolor="FF55FF" type="integer">
+                    <fixedvalues>
+                        <fixedvalue name="&lt;unnamed&gt;" value="0x8"/>
+                    </fixedvalues>
+                </number>
+                <number name="Major" id="279" type="integer"/>
+            </structure>
+            <offset name="dataPtr" id="289" references="id:281" referenced-size="id:17"/>
+        </structure>
+        <structure name="ShowNameData" id="281" extends="id:4">
+            <string name="ShowName" id="291" fillcolor="00FF7F" type="pascal" length="remaining"/>
+        </structure>
+    </grammar>
+</ufwb>
