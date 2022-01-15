@@ -14,7 +14,8 @@ short index,
 int checksum,
 size_t size,
 void* data
-}```
+}
+```
 
 ## Checksum (pseudocode)
 
@@ -24,4 +25,5 @@ foreach char in data {
 xor += (char ^ iter)
 sum += char
 }
-checksum = (xor * 0x10000) | (sum & 0xFFFF)```
+checksum = (xor * 0x10000) | (sum & 0xFFFF)
+```
