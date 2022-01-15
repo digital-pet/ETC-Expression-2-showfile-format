@@ -7,7 +7,8 @@ A WIP parser for the ETC Expression 2 showfile format.
 
 ## Index format
 
-```struct {
+```
+struct {
 char minorType,
 char majorType,
 short index,
@@ -19,7 +20,8 @@ void* data
 
 ## Checksum (pseudocode)
 
-```int xor = 0
+```
+int xor = 0
 int sum16 = 0
 foreach char in data {
 xor += (char ^ iter)
