@@ -22,9 +22,11 @@ void* data
 ```
 int xor = 0
 int sum16 = 0
+int iter = 0
 foreach char in data {
 xor += (char ^ iter)
 sum16 += char
+iter++
 }
 checksum = (xor * 0x10000) | (sum16 & 0xFFFF)
 ```
