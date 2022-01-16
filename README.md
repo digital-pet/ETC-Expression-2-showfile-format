@@ -9,6 +9,8 @@ Index follows immediately with the first "entry" having type 0x0 and index 0x0 d
 
 ## Index format
 
+An array of the following struct
+
 ```
 struct {
 short type, // bitfield
