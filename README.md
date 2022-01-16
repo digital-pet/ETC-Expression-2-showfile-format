@@ -5,6 +5,8 @@ A WIP parser for the proprietary show file format used with the ETC Expression 2
 
 16 bytes, "ETC EXP II" zero padded
 
+Index follows immediately with the first "entry" having type 0x0 and index 0x0 denoting the size, offset (always 0x20) and checksum of the remaining index.
+
 ## Index format
 
 ```
@@ -12,8 +14,8 @@ struct {
 short type, // bitfield
 short index,  //BCD for cues, hex for submasters
 int checksum,
-size_t size,
-void* data
+size_t data_size,
+fpos_t data_offset
 }
 ```
 
